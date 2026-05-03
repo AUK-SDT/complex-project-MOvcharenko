@@ -4,12 +4,6 @@ A personal movie and TV show tracker built with Flutter, powered by the [TMDB AP
 
 ---
 
-## Screenshots
-
-> Run the app and take screenshots to place here.
-
----
-
 ## Features
 
 | Feature | Status |
