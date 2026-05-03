@@ -24,9 +24,6 @@ A personal movie and TV show tracker built with Flutter, powered by the [TMDB AP
 | Error states with retry | ✅ Live |
 | Pull-to-refresh | ✅ Live |
 | Dark / light theme | ✅ Live |
-| Trailer playback | 🚧 Coming soon |
-| Cast detail screen | 🚧 Coming soon |
-| User ratings & reviews | 🚧 Coming soon |
 
 ---
 
