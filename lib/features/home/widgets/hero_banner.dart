@@ -25,7 +25,7 @@ class HeroBanner extends StatelessWidget {
               CachedNetworkImage(
                 imageUrl: movie.backdropUrl!,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => const MovieCardShimmer(width: double.infinity, height: 260),
+                placeholder: (_, __) => const MovieCardShimmer(),
                 errorWidget: (_, __, ___) => Container(color: theme.cardTheme.color),
               )
             else

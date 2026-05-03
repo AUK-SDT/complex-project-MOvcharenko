@@ -12,6 +12,7 @@ import '../features/detail/cubit/detail_cubit.dart';
 import '../features/watchlist/watchlist_screen.dart';
 import '../features/watchlist/cubit/watchlist_cubit.dart';
 import '../features/genre/genre_screen.dart';
+import '../features/genre/cubit/genre_cubit.dart';
 import 'shell_screen.dart';
 
 final appRouter = GoRouter(
@@ -57,7 +58,11 @@ final appRouter = GoRouter(
       path: AppRoutes.genre,
       builder: (context, state) {
         final id = int.parse(state.pathParameters['id']!);
-        return GenreScreen(genreId: id);
+        final name = state.uri.queryParameters['name'] ?? '';
+        return BlocProvider(
+          create: (_) => sl<GenreCubit>(),
+          child: GenreScreen(genreId: id, genreName: name),
+        );
       },
     ),
   ],

@@ -114,8 +114,6 @@ class _ResultGrid extends StatelessWidget {
               return MovieCard(
                 movie: movie,
                 onTap: () => onTap(movie.id),
-                width: double.infinity,
-                height: double.infinity,
               );
             },
           ),
@@ -139,7 +137,7 @@ class _SearchShimmer extends StatelessWidget {
         childAspectRatio: 0.55,
       ),
       itemCount: 9,
-      itemBuilder: (_, __) => const MovieCardShimmer(width: double.infinity, height: double.infinity),
+      itemBuilder: (_, __) => const MovieCardShimmer(),
     );
   }
 }

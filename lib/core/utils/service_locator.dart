@@ -6,6 +6,7 @@ import '../../features/search/cubit/search_cubit.dart';
 import '../../features/detail/cubit/detail_cubit.dart';
 import '../../features/watchlist/repository/watchlist_repository.dart';
 import '../../features/watchlist/cubit/watchlist_cubit.dart';
+import '../../features/genre/cubit/genre_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -23,4 +24,5 @@ void setupServiceLocator() {
   sl.registerFactory<SearchCubit>(() => SearchCubit(sl<MovieRepository>()));
   sl.registerFactory<DetailCubit>(() => DetailCubit(sl<MovieRepository>(), sl<WatchlistRepository>()));
   sl.registerFactory<WatchlistCubit>(() => WatchlistCubit(sl<WatchlistRepository>()));
+  sl.registerFactory<GenreCubit>(() => GenreCubit(sl<MovieRepository>()));
 }

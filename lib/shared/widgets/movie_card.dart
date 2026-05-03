@@ -3,18 +3,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../features/home/models/movie.dart';
 
+// MovieCard works in two layout contexts:
+//   - Horizontal lists: caller wraps it in SizedBox(width: N, height: N) so
+//     the Column has a tight height and Expanded fills the poster naturally.
+//   - Grids: the cell already provides a tight height via childAspectRatio,
+//     so Expanded fills the remaining space after title/year text.
+// Either way the Stack always receives a concrete size via StackFit.expand.
 class MovieCard extends StatelessWidget {
   final Movie movie;
   final VoidCallback onTap;
-  final double width;
-  final double height;
 
   const MovieCard({
     super.key,
     required this.movie,
     required this.onTap,
-    this.width = 140,
-    this.height = 210,
   });
 
   @override
@@ -23,31 +25,28 @@ class MovieCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
-      child: SizedBox(
-        width: width,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _PosterImage(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: _PosterImage(
               url: movie.posterUrl,
-              width: width,
-              height: height,
               rating: movie.ratingDisplay,
             ),
-            const SizedBox(height: 8),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            movie.title,
+            style: theme.textTheme.titleSmall,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (movie.year.isNotEmpty)
             Text(
-              movie.title,
-              style: theme.textTheme.titleSmall,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              movie.year,
+              style: theme.textTheme.bodySmall,
             ),
-            if (movie.year.isNotEmpty)
-              Text(
-                movie.year,
-                style: theme.textTheme.bodySmall,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -55,35 +54,25 @@ class MovieCard extends StatelessWidget {
 
 class _PosterImage extends StatelessWidget {
   final String? url;
-  final double width;
-  final double height;
   final String rating;
 
-  const _PosterImage({
-    required this.url,
-    required this.width,
-    required this.height,
-    required this.rating,
-  });
+  const _PosterImage({required this.url, required this.rating});
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: Stack(
+        fit: StackFit.expand,
         children: [
-          SizedBox(
-            width: width,
-            height: height,
-            child: url != null
-                ? CachedNetworkImage(
-                    imageUrl: url!,
-                    fit: BoxFit.cover,
-                    placeholder: (_, __) => _ShimmerBox(width: width, height: height),
-                    errorWidget: (_, __, ___) => _PlaceholderBox(height: height),
-                  )
-                : _PlaceholderBox(height: height),
-          ),
+          url != null
+              ? CachedNetworkImage(
+                  imageUrl: url!,
+                  fit: BoxFit.cover,
+                  placeholder: (_, __) => const _ShimmerBox(),
+                  errorWidget: (_, __, ___) => const _PlaceholderBox(),
+                )
+              : const _PlaceholderBox(),
           Positioned(
             bottom: 8,
             left: 8,
@@ -127,13 +116,11 @@ class _RatingBadge extends StatelessWidget {
 }
 
 class _PlaceholderBox extends StatelessWidget {
-  final double height;
-  const _PlaceholderBox({required this.height});
+  const _PlaceholderBox();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height,
       color: Theme.of(context).cardTheme.color,
       child: const Center(
         child: Icon(Icons.movie_outlined, color: Colors.white24, size: 40),
@@ -143,9 +130,7 @@ class _PlaceholderBox extends StatelessWidget {
 }
 
 class _ShimmerBox extends StatelessWidget {
-  final double width;
-  final double height;
-  const _ShimmerBox({required this.width, required this.height});
+  const _ShimmerBox();
 
   @override
   Widget build(BuildContext context) {
@@ -153,16 +138,14 @@ class _ShimmerBox extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0),
       highlightColor: isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5),
-      child: Container(width: width, height: height, color: Colors.white),
+      child: Container(color: Colors.white),
     );
   }
 }
 
+// Used in loading skeletons. Caller must wrap in a SizedBox with fixed dimensions.
 class MovieCardShimmer extends StatelessWidget {
-  final double width;
-  final double height;
-
-  const MovieCardShimmer({super.key, this.width = 140, this.height = 210});
+  const MovieCardShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -173,13 +156,21 @@ class MovieCardShimmer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: Container(width: width, height: height, color: Colors.white),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(color: Colors.white),
+            ),
           ),
           const SizedBox(height: 8),
-          Container(width: width * 0.8, height: 13, color: Colors.white, margin: const EdgeInsets.only(bottom: 4)),
-          Container(width: width * 0.4, height: 11, color: Colors.white),
+          FractionallySizedBox(
+            widthFactor: 0.8,
+            child: Container(height: 13, color: Colors.white, margin: const EdgeInsets.only(bottom: 4)),
+          ),
+          FractionallySizedBox(
+            widthFactor: 0.4,
+            child: Container(height: 11, color: Colors.white),
+          ),
         ],
       ),
     );

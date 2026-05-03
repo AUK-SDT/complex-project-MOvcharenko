@@ -108,7 +108,7 @@ class _LoadedBody extends StatelessWidget {
                   const SizedBox(height: 12),
                   GenreChipRow(
                     genres: state.genres,
-                    onGenreTap: (g) => context.push(AppRoutes.genrePath(g.id)),
+                    onGenreTap: (g) => context.push(AppRoutes.genrePath(g.id, g.name)),
                   ),
                 ],
                 const SizedBox(height: 32),

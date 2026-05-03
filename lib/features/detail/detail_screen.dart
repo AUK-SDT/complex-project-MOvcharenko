@@ -244,11 +244,12 @@ class _SimilarRow extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final movie = movies[index];
-          return MovieCard(
-            movie: movie,
-            onTap: () => context.push(AppRoutes.detailPath(movie.id)),
+          return SizedBox(
             width: 120,
-            height: 180,
+            child: MovieCard(
+              movie: movie,
+              onTap: () => context.push(AppRoutes.detailPath(movie.id)),
+            ),
           );
         },
       ),

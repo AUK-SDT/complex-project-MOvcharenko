@@ -20,6 +20,8 @@ class HorizontalMovieList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The outer SizedBox gives the list a tight height, so each card's
+    // Column is fully constrained and Expanded works correctly.
     return SizedBox(
       height: cardHeight + 52,
       child: ListView.separated(
@@ -29,14 +31,16 @@ class HorizontalMovieList extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           if (isLoading) {
-            return MovieCardShimmer(width: cardWidth, height: cardHeight);
+            return SizedBox(
+              width: cardWidth,
+              height: cardHeight + 52,
+              child: const MovieCardShimmer(),
+            );
           }
           final movie = movies[index];
-          return MovieCard(
-            movie: movie,
-            onTap: () => onMovieTap(movie),
+          return SizedBox(
             width: cardWidth,
-            height: cardHeight,
+            child: MovieCard(movie: movie, onTap: () => onMovieTap(movie)),
           );
         },
       ),
