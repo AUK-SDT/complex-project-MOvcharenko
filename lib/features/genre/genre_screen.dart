@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'cubit/genre_cubit.dart';
 import 'cubit/genre_state.dart';
-import '../home/models/genre.dart';
+import '../models/genre.dart';
 import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../../../core/constants/app_routes.dart';

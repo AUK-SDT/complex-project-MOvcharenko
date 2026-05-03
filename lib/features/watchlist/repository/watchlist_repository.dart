@@ -1,6 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/watchlist_item.dart';
-import '../../home/models/movie.dart';
+import '../../models/movie.dart';
 import '../../../core/constants/app_constants.dart';
 
 class WatchlistRepository {

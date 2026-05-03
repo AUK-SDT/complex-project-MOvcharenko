@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'cubit/detail_cubit.dart';
 import 'cubit/detail_state.dart';
-import '../home/models/movie.dart';
+import '../models/movie.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/section_header.dart';

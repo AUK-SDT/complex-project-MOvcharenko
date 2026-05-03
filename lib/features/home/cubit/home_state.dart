@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import '../models/movie.dart';
-import '../models/genre.dart';
+import '../../models/genre.dart';
+import '../../models/movie.dart';
 import '../../../core/utils/failures.dart';
 
 enum HomeTab { movies, tvShows }

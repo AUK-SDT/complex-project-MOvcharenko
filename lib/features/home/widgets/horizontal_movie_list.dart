@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/movie_card.dart';
-import '../../home/models/movie.dart';
+import '../../models/movie.dart';
 
 class HorizontalMovieList extends StatelessWidget {
   final List<Movie> movies;

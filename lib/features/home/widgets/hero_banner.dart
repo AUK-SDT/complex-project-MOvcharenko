@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../shared/widgets/movie_card.dart';
-import '../../home/models/movie.dart';
+import '../../models/movie.dart';
 
 class HeroBanner extends StatelessWidget {
   final Movie movie;

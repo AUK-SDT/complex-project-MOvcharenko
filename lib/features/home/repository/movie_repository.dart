@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import '../../../core/utils/error_mapper.dart';
 import '../../../core/utils/failures.dart';
-import '../models/movie.dart';
-import '../models/genre.dart';
+import '../../models/movie.dart';
+import '../../models/genre.dart';
 
 class MovieRepository {
   final Dio _dio;

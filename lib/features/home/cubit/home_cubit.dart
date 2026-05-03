@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../repository/movie_repository.dart';
-import '../models/genre.dart';
+import '../../models/genre.dart';
 import '../../../core/utils/failures.dart';
 import 'home_state.dart';
 

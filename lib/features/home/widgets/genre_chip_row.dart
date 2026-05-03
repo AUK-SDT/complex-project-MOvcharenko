@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../home/models/genre.dart';
+import '../../models/genre.dart';
 
 class GenreChipRow extends StatelessWidget {
   final List<Genre> genres;

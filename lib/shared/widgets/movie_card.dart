@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../features/home/models/movie.dart';
+import '../../features/models/movie.dart';
 
 // MovieCard works in two layout contexts:
 //   - Horizontal lists: caller wraps it in SizedBox(width: N, height: N) so
