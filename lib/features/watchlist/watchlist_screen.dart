@@ -65,7 +65,7 @@ class _WatchlistBody extends StatelessWidget {
             itemCount: state.unwatched.length,
             itemBuilder: (context, i) => _WatchlistTile(
               item: state.unwatched[i],
-              onTap: () => context.push(AppRoutes.detailPath(state.unwatched[i].id)),
+              onTap: () => context.push(AppRoutes.detailPath(state.unwatched[i].id, isMovie: state.unwatched[i].isMovie)),
               onToggleWatched: () => cubit.toggleWatched(state.unwatched[i].id),
               onRemove: () => cubit.remove(state.unwatched[i].id),
             ),
@@ -85,7 +85,7 @@ class _WatchlistBody extends StatelessWidget {
             itemCount: state.watched.length,
             itemBuilder: (context, i) => _WatchlistTile(
               item: state.watched[i],
-              onTap: () => context.push(AppRoutes.detailPath(state.watched[i].id)),
+              onTap: () => context.push(AppRoutes.detailPath(state.watched[i].id, isMovie: state.watched[i].isMovie)),
               onToggleWatched: () => cubit.toggleWatched(state.watched[i].id),
               onRemove: () => cubit.remove(state.watched[i].id),
             ),
@@ -130,17 +130,17 @@ class _WatchlistTile extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           child: item.posterUrl != null
               ? CachedNetworkImage(
-                  imageUrl: item.posterUrl!,
-                  width: 52,
-                  height: 78,
-                  fit: BoxFit.cover,
-                )
+            imageUrl: item.posterUrl!,
+            width: 52,
+            height: 78,
+            fit: BoxFit.cover,
+          )
               : Container(
-                  width: 52,
-                  height: 78,
-                  color: theme.cardTheme.color,
-                  child: const Icon(Icons.movie_outlined, color: Colors.white24),
-                ),
+            width: 52,
+            height: 78,
+            color: theme.cardTheme.color,
+            child: const Icon(Icons.movie_outlined, color: Colors.white24),
+          ),
         ),
         title: Text(
           item.title,

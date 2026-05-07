@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../models/movie.dart';
+import '../../models/media_item.dart';
 import '../../../core/utils/failures.dart';
 
 abstract class DetailState extends Equatable {
@@ -17,29 +17,29 @@ class DetailLoading extends DetailState {
 }
 
 class DetailLoaded extends DetailState {
-  final Movie movie;
-  final List<Movie> similar;
+  final MediaItem item;
+  final List<MediaItem> similar;
   final bool isInWatchlist;
 
   const DetailLoaded({
-    required this.movie,
+    required this.item,
     this.similar = const [],
     this.isInWatchlist = false,
   });
 
   DetailLoaded copyWith({
-    Movie? movie,
-    List<Movie>? similar,
+    MediaItem? item,
+    List<MediaItem>? similar,
     bool? isInWatchlist,
   }) =>
       DetailLoaded(
-        movie: movie ?? this.movie,
+        item: item ?? this.item,
         similar: similar ?? this.similar,
         isInWatchlist: isInWatchlist ?? this.isInWatchlist,
       );
 
   @override
-  List<Object?> get props => [movie, similar, isInWatchlist];
+  List<Object?> get props => [item, similar, isInWatchlist];
 }
 
 class DetailError extends DetailState {

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import '../constants/app_constants.dart';
 
 class ApiClient {
@@ -31,6 +32,7 @@ class ApiClient {
     _dio.interceptors.addAll([
       DioCacheInterceptor(options: _cacheOptions),
       LogInterceptor(requestBody: false, responseBody: false),
+      PrettyDioLogger()
     ]);
   }
 }

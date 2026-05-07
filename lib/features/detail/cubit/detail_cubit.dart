@@ -11,22 +11,18 @@ class DetailCubit extends Cubit<DetailState> {
   DetailCubit(this._movieRepository, this._watchlistRepository)
       : super(const DetailInitial());
 
-  Future<void> loadDetail(int id, {bool isMovie = true}) async {
+  Future<void> loadDetail(int id, {required bool isMovie}) async {
     emit(const DetailLoading());
     try {
       final results = await Future.wait([
-        _movieRepository.fetchMovieDetail(id),
+        _movieRepository.fetchDetail(id, isMovie: isMovie),
         _movieRepository.fetchSimilar(id, isMovie: isMovie),
       ]);
 
-      final movie = results[0] as dynamic;
-      final similar = results[1] as dynamic;
-      final isInWatchlist = _watchlistRepository.isInWatchlist(id);
-
       emit(DetailLoaded(
-        movie: movie,
-        similar: similar,
-        isInWatchlist: isInWatchlist,
+        item: results[0] as dynamic,
+        similar: results[1] as dynamic,
+        isInWatchlist: _watchlistRepository.isInWatchlist(id),
       ));
     } on Failure catch (f) {
       emit(DetailError(f));
@@ -40,9 +36,9 @@ class DetailCubit extends Cubit<DetailState> {
     if (current is! DetailLoaded) return;
 
     if (current.isInWatchlist) {
-      await _watchlistRepository.remove(current.movie.id);
+      await _watchlistRepository.remove(current.item.id);
     } else {
-      await _watchlistRepository.add(current.movie);
+      await _watchlistRepository.add(current.item);
     }
 
     emit(current.copyWith(isInWatchlist: !current.isInWatchlist));

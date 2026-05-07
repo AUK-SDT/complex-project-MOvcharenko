@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../models/movie.dart';
+import '../../models/media_item.dart';
 import '../../../core/utils/failures.dart';
 
 abstract class SearchState extends Equatable {
@@ -17,7 +17,7 @@ class SearchLoading extends SearchState {
 }
 
 class SearchLoaded extends SearchState {
-  final List<Movie> results;
+  final List<MediaItem> results;
   final String query;
 
   const SearchLoaded({required this.results, required this.query});

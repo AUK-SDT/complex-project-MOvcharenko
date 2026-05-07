@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'cubit/home_cubit.dart';
 import 'cubit/home_state.dart';
+import '../models/media_item.dart';
 import 'widgets/hero_banner.dart';
 import 'widgets/horizontal_movie_list.dart';
 import 'widgets/content_tab_selector.dart';
@@ -56,8 +57,8 @@ class _LoadedBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<HomeCubit>();
-    final movies = state.activeList;
-    final featured = movies.isNotEmpty ? movies.first : null;
+    final items = state.activeList;
+    final featured = items.isNotEmpty ? items.first : null;
 
     return RefreshIndicator(
       onRefresh: cubit.retry,
@@ -70,8 +71,11 @@ class _LoadedBody extends StatelessWidget {
               children: [
                 if (featured != null)
                   HeroBanner(
-                    movie: featured,
-                    onTap: () => context.push(AppRoutes.detailPath(featured.id)),
+                    item: featured,
+                    onTap: () => context.push(
+                      AppRoutes.detailPath(featured.id,
+                          isMovie: featured.isMovie),
+                    ),
                   ),
                 const SizedBox(height: 20),
                 Padding(
@@ -92,8 +96,10 @@ class _LoadedBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 HorizontalMovieList(
-                  movies: movies.skip(1).toList(),
-                  onMovieTap: (m) => context.push(AppRoutes.detailPath(m.id)),
+                  items: items.skip(1).toList(),
+                  onItemTap: (item) => context.push(
+                    AppRoutes.detailPath(item.id, isMovie: item.isMovie),
+                  ),
                 ),
                 const SizedBox(height: 28),
                 if (state.genres.isNotEmpty) ...[
@@ -108,7 +114,8 @@ class _LoadedBody extends StatelessWidget {
                   const SizedBox(height: 12),
                   GenreChipRow(
                     genres: state.genres,
-                    onGenreTap: (g) => context.push(AppRoutes.genrePath(g.id, g.name)),
+                    onGenreTap: (g) =>
+                        context.push(AppRoutes.genrePath(g.id, g.name)),
                   ),
                 ],
                 const SizedBox(height: 32),
@@ -131,14 +138,11 @@ class _HomeAppBar extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: 'Cine',
-              style: theme.appBarTheme.titleTextStyle,
-            ),
+                text: 'Cine', style: theme.appBarTheme.titleTextStyle),
             TextSpan(
               text: 'Log',
-              style: theme.appBarTheme.titleTextStyle?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
+              style: theme.appBarTheme.titleTextStyle
+                  ?.copyWith(color: theme.colorScheme.primary),
             ),
           ],
         ),
@@ -160,8 +164,6 @@ class _LoadingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 }

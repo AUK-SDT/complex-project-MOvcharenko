@@ -5,7 +5,9 @@ abstract class AppRoutes {
   static const String watchlist = '/watchlist';
   static const String genre = '/genre/:id';
 
-  static String detailPath(int movieId) => '/detail/$movieId';
+  static String detailPath(int id, {required bool isMovie}) =>
+      '/detail/$id?type=${isMovie ? 'movie' : 'tv'}';
+
   static String genrePath(int genreId, String genreName) =>
       '/genre/$genreId?name=${Uri.encodeComponent(genreName)}';
 }

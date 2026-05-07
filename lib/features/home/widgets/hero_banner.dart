@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../shared/widgets/movie_card.dart';
-import '../../models/movie.dart';
+import '../../models/media_item.dart';
 
 class HeroBanner extends StatelessWidget {
-  final Movie movie;
+  final MediaItem item;
   final VoidCallback onTap;
 
-  const HeroBanner({super.key, required this.movie, required this.onTap});
+  const HeroBanner({super.key, required this.item, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,13 @@ class HeroBanner extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            if (movie.backdropUrl != null)
+            if (item.backdropUrl != null)
               CachedNetworkImage(
-                imageUrl: movie.backdropUrl!,
+                imageUrl: item.backdropUrl!,
                 fit: BoxFit.cover,
                 placeholder: (_, __) => const MovieCardShimmer(),
-                errorWidget: (_, __, ___) => Container(color: theme.cardTheme.color),
+                errorWidget: (_, __, ___) =>
+                    Container(color: theme.cardTheme.color),
               )
             else
               Container(color: theme.cardTheme.color),
@@ -53,10 +54,10 @@ class HeroBanner extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _TypeBadge(isMovie: movie.isMovie),
+                  _TypeBadge(isMovie: item.isMovie),
                   const SizedBox(height: 6),
                   Text(
-                    movie.title,
+                    item.title,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,
@@ -69,21 +70,23 @@ class HeroBanner extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded, color: Color(0xFFFFB800), size: 16),
+                      const Icon(Icons.star_rounded,
+                          color: Color(0xFFFFB800), size: 16),
                       const SizedBox(width: 4),
                       Text(
-                        movie.ratingDisplay,
+                        item.ratingDisplay,
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (movie.year.isNotEmpty) ...[
+                      if (item.year.isNotEmpty) ...[
                         const SizedBox(width: 12),
                         Text(
-                          movie.year,
-                          style: const TextStyle(color: Colors.white70, fontSize: 13),
+                          item.year,
+                          style: const TextStyle(
+                              color: Colors.white70, fontSize: 13),
                         ),
                       ],
                       const Spacer(),

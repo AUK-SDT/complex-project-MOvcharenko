@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
-import '../../models/genre.dart';
+import '../../models/media_item.dart';
 import '../../models/movie.dart';
+import '../../models/tv_show.dart';
+import '../../models/genre.dart';
 import '../../../core/utils/failures.dart';
 
 enum HomeTab { movies, tvShows }
@@ -22,7 +24,7 @@ class HomeLoading extends HomeState {
 
 class HomeLoaded extends HomeState {
   final List<Movie> trending;
-  final List<Movie> tvShows;
+  final List<TvShow> tvShows;
   final List<Genre> genres;
   final HomeTab activeTab;
 
@@ -35,7 +37,7 @@ class HomeLoaded extends HomeState {
 
   HomeLoaded copyWith({
     List<Movie>? trending,
-    List<Movie>? tvShows,
+    List<TvShow>? tvShows,
     List<Genre>? genres,
     HomeTab? activeTab,
   }) =>
@@ -46,7 +48,8 @@ class HomeLoaded extends HomeState {
         activeTab: activeTab ?? this.activeTab,
       );
 
-  List<Movie> get activeList => activeTab == HomeTab.movies ? trending : tvShows;
+  List<MediaItem> get activeList =>
+      activeTab == HomeTab.movies ? trending : tvShows;
 
   @override
   List<Object?> get props => [trending, tvShows, genres, activeTab];

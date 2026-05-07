@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import '../../features/models/movie.dart';
+import '../../features/models/media_item.dart';
 
-// MovieCard works in two layout contexts:
-//   - Horizontal lists: caller wraps it in SizedBox(width: N, height: N) so
-//     the Column has a tight height and Expanded fills the poster naturally.
-//   - Grids: the cell already provides a tight height via childAspectRatio,
-//     so Expanded fills the remaining space after title/year text.
-// Either way the Stack always receives a concrete size via StackFit.expand.
 class MovieCard extends StatelessWidget {
-  final Movie movie;
+  final MediaItem item;
   final VoidCallback onTap;
 
   const MovieCard({
     super.key,
-    required this.movie,
+    required this.item,
     required this.onTap,
   });
 
@@ -30,22 +24,19 @@ class MovieCard extends StatelessWidget {
         children: [
           Expanded(
             child: _PosterImage(
-              url: movie.posterUrl,
-              rating: movie.ratingDisplay,
+              url: item.posterUrl,
+              rating: item.ratingDisplay,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            movie.title,
+            item.title,
             style: theme.textTheme.titleSmall,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          if (movie.year.isNotEmpty)
-            Text(
-              movie.year,
-              style: theme.textTheme.bodySmall,
-            ),
+          if (item.year.isNotEmpty)
+            Text(item.year, style: theme.textTheme.bodySmall),
         ],
       ),
     );
@@ -137,13 +128,13 @@ class _ShimmerBox extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
       baseColor: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0),
-      highlightColor: isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5),
+      highlightColor:
+          isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5),
       child: Container(color: Colors.white),
     );
   }
 }
 
-// Used in loading skeletons. Caller must wrap in a SizedBox with fixed dimensions.
 class MovieCardShimmer extends StatelessWidget {
   const MovieCardShimmer({super.key});
 
@@ -152,7 +143,8 @@ class MovieCardShimmer extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Shimmer.fromColors(
       baseColor: isDark ? const Color(0xFF2A2A2A) : const Color(0xFFE0E0E0),
-      highlightColor: isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5),
+      highlightColor:
+          isDark ? const Color(0xFF3A3A3A) : const Color(0xFFF5F5F5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -165,7 +157,10 @@ class MovieCardShimmer extends StatelessWidget {
           const SizedBox(height: 8),
           FractionallySizedBox(
             widthFactor: 0.8,
-            child: Container(height: 13, color: Colors.white, margin: const EdgeInsets.only(bottom: 4)),
+            child: Container(
+                height: 13,
+                color: Colors.white,
+                margin: const EdgeInsets.only(bottom: 4)),
           ),
           FractionallySizedBox(
             widthFactor: 0.4,

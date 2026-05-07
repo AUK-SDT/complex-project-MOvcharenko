@@ -60,8 +60,8 @@ class _GenreScreenState extends State<GenreScreen> {
               body: ErrorView(
                 failure: state.failure,
                 onRetry: () => context.read<GenreCubit>().retry(
-                      Genre(id: widget.genreId, name: widget.genreName),
-                    ),
+                  Genre(id: widget.genreId, name: widget.genreName),
+                ),
               ),
             );
           }
@@ -125,11 +125,11 @@ class _GenreLoadedBody extends StatelessWidget {
               childAspectRatio: 0.52,
             ),
             delegate: SliverChildBuilderDelegate(
-              (context, index) {
+                  (context, index) {
                 final movie = state.movies[index];
                 return MovieCard(
-                  movie: movie,
-                  onTap: () => context.push(AppRoutes.detailPath(movie.id)),
+                  item: movie,
+                  onTap: () => context.push(AppRoutes.detailPath(movie.id, isMovie: true)),
                 );
               },
               childCount: state.movies.length,
@@ -201,7 +201,7 @@ class _GenreLoadingBody extends StatelessWidget {
               childAspectRatio: 0.52,
             ),
             delegate: SliverChildBuilderDelegate(
-              (_, __) => const MovieCardShimmer(),
+                  (_, __) => const MovieCardShimmer(),
               childCount: 12,
             ),
           ),

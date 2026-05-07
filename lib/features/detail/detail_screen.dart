@@ -4,15 +4,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
 import 'cubit/detail_cubit.dart';
 import 'cubit/detail_state.dart';
-import '../models/movie.dart';
+import '../models/media_item.dart';
 import '../../../shared/widgets/error_view.dart';
 import '../../../shared/widgets/movie_card.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../core/constants/app_routes.dart';
 
 class DetailScreen extends StatefulWidget {
-  final int movieId;
-  const DetailScreen({super.key, required this.movieId});
+  final int mediaId;
+  final bool isMovie;
+
+  const DetailScreen({super.key, required this.mediaId, required this.isMovie});
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -22,7 +24,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<DetailCubit>().loadDetail(widget.movieId);
+    context.read<DetailCubit>().loadDetail(widget.mediaId, isMovie: widget.isMovie);
   }
 
   @override
@@ -38,7 +40,9 @@ class _DetailScreenState extends State<DetailScreen> {
               appBar: AppBar(),
               body: ErrorView(
                 failure: state.failure,
-                onRetry: () => context.read<DetailCubit>().loadDetail(widget.movieId),
+                onRetry: () => context
+                    .read<DetailCubit>()
+                    .loadDetail(widget.mediaId, isMovie: widget.isMovie),
               ),
             );
           }
@@ -58,33 +62,33 @@ class _DetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movie = state.movie;
+    final item = state.item;
     final theme = Theme.of(context);
     final cubit = context.read<DetailCubit>();
 
     return CustomScrollView(
       slivers: [
-        _DetailAppBar(movie: movie, state: state, cubit: cubit),
+        _DetailAppBar(item: item, state: state, cubit: cubit),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _MetaRow(movie: movie),
+                _MetaRow(item: item),
                 const SizedBox(height: 20),
                 _ActionRow(state: state, cubit: cubit),
-                if (movie.overview != null && movie.overview!.isNotEmpty) ...[
+                if (item.overview != null && item.overview!.isNotEmpty) ...[
                   const SizedBox(height: 24),
                   Text('Overview', style: theme.textTheme.titleMedium),
                   const SizedBox(height: 8),
-                  Text(movie.overview!, style: theme.textTheme.bodyLarge),
+                  Text(item.overview!, style: theme.textTheme.bodyLarge),
                 ],
                 if (state.similar.isNotEmpty) ...[
                   const SizedBox(height: 28),
-                  SectionHeader(title: 'More Like This'),
+                  const SectionHeader(title: 'More Like This'),
                   const SizedBox(height: 12),
-                  _SimilarRow(movies: state.similar),
+                  _SimilarRow(items: state.similar, isMovie: item.isMovie),
                 ],
                 const SizedBox(height: 32),
               ],
@@ -97,12 +101,12 @@ class _DetailBody extends StatelessWidget {
 }
 
 class _DetailAppBar extends StatelessWidget {
-  final Movie movie;
+  final MediaItem item;
   final DetailLoaded state;
   final DetailCubit cubit;
 
   const _DetailAppBar({
-    required this.movie,
+    required this.item,
     required this.state,
     required this.cubit,
   });
@@ -119,22 +123,27 @@ class _DetailAppBar extends StatelessWidget {
       actions: [
         IconButton(
           icon: Icon(
-            state.isInWatchlist ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
-            color: state.isInWatchlist ? Theme.of(context).colorScheme.primary : null,
+            state.isInWatchlist
+                ? Icons.bookmark_rounded
+                : Icons.bookmark_border_rounded,
+            color: state.isInWatchlist
+                ? Theme.of(context).colorScheme.primary
+                : null,
           ),
           onPressed: cubit.toggleWatchlist,
-          tooltip: state.isInWatchlist ? 'Remove from watchlist' : 'Add to watchlist',
+          tooltip: state.isInWatchlist
+              ? 'Remove from watchlist'
+              : 'Add to watchlist',
         ),
         const SizedBox(width: 4),
       ],
       flexibleSpace: FlexibleSpaceBar(
-        background: movie.backdropUrl != null
+        background: item.backdropUrl != null
             ? CachedNetworkImage(
-                imageUrl: movie.backdropUrl!,
+                imageUrl: item.backdropUrl!,
                 fit: BoxFit.cover,
-                errorWidget: (_, __, ___) => Container(
-                  color: Theme.of(context).cardTheme.color,
-                ),
+                errorWidget: (_, __, ___) =>
+                    Container(color: Theme.of(context).cardTheme.color),
               )
             : Container(color: Theme.of(context).cardTheme.color),
       ),
@@ -143,8 +152,8 @@ class _DetailAppBar extends StatelessWidget {
 }
 
 class _MetaRow extends StatelessWidget {
-  final Movie movie;
-  const _MetaRow({required this.movie});
+  final MediaItem item;
+  const _MetaRow({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -152,21 +161,24 @@ class _MetaRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(movie.title, style: theme.textTheme.displayMedium),
+        Text(item.title, style: theme.textTheme.displayMedium),
         const SizedBox(height: 10),
         Wrap(
           spacing: 16,
           children: [
-            if (movie.year.isNotEmpty)
-              _MetaChip(icon: Icons.calendar_today_outlined, label: movie.year),
+            if (item.year.isNotEmpty)
+              _MetaChip(
+                  icon: Icons.calendar_today_outlined, label: item.year),
             _MetaChip(
               icon: Icons.star_rounded,
-              label: movie.ratingDisplay,
+              label: item.ratingDisplay,
               iconColor: const Color(0xFFFFB800),
             ),
             _MetaChip(
-              icon: movie.isMovie ? Icons.movie_outlined : Icons.tv_outlined,
-              label: movie.isMovie ? 'Movie' : 'TV Show',
+              icon: item.isMovie
+                  ? Icons.movie_outlined
+                  : Icons.tv_outlined,
+              label: item.isMovie ? 'Movie' : 'TV Show',
             ),
           ],
         ),
@@ -180,7 +192,8 @@ class _MetaChip extends StatelessWidget {
   final String label;
   final Color? iconColor;
 
-  const _MetaChip({required this.icon, required this.label, this.iconColor});
+  const _MetaChip(
+      {required this.icon, required this.label, this.iconColor});
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +201,10 @@ class _MetaChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 15, color: iconColor ?? theme.colorScheme.onSurface.withOpacity(0.5)),
+        Icon(icon,
+            size: 15,
+            color: iconColor ??
+                theme.colorScheme.onSurface.withOpacity(0.5)),
         const SizedBox(width: 4),
         Text(label, style: theme.textTheme.bodyMedium),
       ],
@@ -210,19 +226,23 @@ class _ActionRow extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: cubit.toggleWatchlist,
             icon: Icon(
-              state.isInWatchlist ? Icons.check_rounded : Icons.add_rounded,
+              state.isInWatchlist
+                  ? Icons.check_rounded
+                  : Icons.add_rounded,
               size: 18,
             ),
-            label: Text(state.isInWatchlist ? 'In Watchlist' : 'Add to Watchlist'),
+            label: Text(
+                state.isInWatchlist ? 'In Watchlist' : 'Add to Watchlist'),
           ),
         ),
         const SizedBox(width: 12),
         OutlinedButton.icon(
-          onPressed: null, // Trailer feature — coming soon
+          onPressed: null, // Trailer — coming soon
           icon: const Icon(Icons.play_circle_outline_rounded, size: 18),
           label: const Text('Trailer'),
           style: OutlinedButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+            foregroundColor:
+                Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
           ),
         ),
       ],
@@ -231,8 +251,10 @@ class _ActionRow extends StatelessWidget {
 }
 
 class _SimilarRow extends StatelessWidget {
-  final List<Movie> movies;
-  const _SimilarRow({required this.movies});
+  final List<MediaItem> items;
+  final bool isMovie;
+
+  const _SimilarRow({required this.items, required this.isMovie});
 
   @override
   Widget build(BuildContext context) {
@@ -240,15 +262,17 @@ class _SimilarRow extends StatelessWidget {
       height: 262,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        itemCount: movies.length,
+        itemCount: items.length,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
-          final movie = movies[index];
+          final item = items[index];
           return SizedBox(
             width: 120,
             child: MovieCard(
-              movie: movie,
-              onTap: () => context.push(AppRoutes.detailPath(movie.id)),
+              item: item,
+              onTap: () => context.push(
+                AppRoutes.detailPath(item.id, isMovie: item.isMovie),
+              ),
             ),
           );
         },

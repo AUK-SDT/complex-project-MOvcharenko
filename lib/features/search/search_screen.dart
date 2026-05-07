@@ -33,9 +33,8 @@ class _SearchScreenState extends State<SearchScreen> {
           controller: _controller,
           autofocus: true,
           onChanged: cubit.onQueryChanged,
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurface,
-          ),
+          style: theme.textTheme.bodyLarge
+              ?.copyWith(color: theme.colorScheme.onSurface),
           decoration: InputDecoration(
             hintText: 'Search movies & TV shows…',
             border: InputBorder.none,
@@ -64,14 +63,12 @@ class _SearchScreenState extends State<SearchScreen> {
           if (state is SearchEmpty) return _EmptyResult(query: state.query);
           if (state is SearchError) {
             return Center(
-              child: Text(state.failure.message, style: theme.textTheme.bodyMedium),
+              child: Text(state.failure.message,
+                  style: theme.textTheme.bodyMedium),
             );
           }
           if (state is SearchLoaded) {
-            return _ResultGrid(
-              state: state,
-              onTap: (id) => context.push(AppRoutes.detailPath(id)),
-            );
+            return _ResultGrid(state: state);
           }
           return const SizedBox.shrink();
         },
@@ -82,9 +79,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
 class _ResultGrid extends StatelessWidget {
   final SearchLoaded state;
-  final void Function(int) onTap;
-
-  const _ResultGrid({required this.state, required this.onTap});
+  const _ResultGrid({required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +105,12 @@ class _ResultGrid extends StatelessWidget {
             ),
             itemCount: state.results.length,
             itemBuilder: (context, index) {
-              final movie = state.results[index];
+              final item = state.results[index];
               return MovieCard(
-                movie: movie,
-                onTap: () => onTap(movie.id),
+                item: item,
+                onTap: () => context.push(
+                  AppRoutes.detailPath(item.id, isMovie: item.isMovie),
+                ),
               );
             },
           ),
@@ -152,13 +149,12 @@ class _SearchHint extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.search_rounded,
-            size: 64,
-            color: theme.colorScheme.onSurface.withOpacity(0.15),
-          ),
+          Icon(Icons.search_rounded,
+              size: 64,
+              color: theme.colorScheme.onSurface.withOpacity(0.15)),
           const SizedBox(height: 16),
-          Text('Search for movies or shows', style: theme.textTheme.bodyMedium),
+          Text('Search for movies or shows',
+              style: theme.textTheme.bodyMedium),
         ],
       ),
     );
@@ -176,11 +172,9 @@ class _EmptyResult extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.movie_filter_outlined,
-            size: 64,
-            color: theme.colorScheme.onSurface.withOpacity(0.15),
-          ),
+          Icon(Icons.movie_filter_outlined,
+              size: 64,
+              color: theme.colorScheme.onSurface.withOpacity(0.15)),
           const SizedBox(height: 16),
           Text('No results for "$query"', style: theme.textTheme.bodyMedium),
         ],
